@@ -1,0 +1,23 @@
+import pandas as pd
+
+# Load the CSV file
+df = pd.read_csv('https://api.kite.trade/instruments')
+
+# Convert 'segment' and 'name' columns to uppercase for filtering
+df['segment'] = df['segment'].str.upper()
+df['name'] = df['name'].str.upper()
+
+# Filter for 'NFO-FUT' with names 'NIFTY', 'BANKNIFTY', 'FINNIFTY'
+nfo_fut_filter = (df['segment'] == 'NFO-FUT') & (df['name'].isin(['NIFTY', 'BANKNIFTY', 'FINNIFTY']))
+
+# Filter for 'BFO-FUT' with names 'SENSEX', 'BANKEX'
+bfo_fut_filter = (df['segment'] == 'BFO-FUT') & (df['name'].isin(['SENSEX', 'BANKEX']))
+
+# Filter for 'MCX-FUT' with name 'CRUDEOIL'
+mcx_fut_filter = (df['segment'] == 'MCX-FUT') & (df['name'] == 'CRUDEOIL')
+
+# Combine all filters
+filtered_df = df[nfo_fut_filter | bfo_fut_filter | mcx_fut_filter]
+
+# Save the filtered DataFrame to a new CSV file
+filtered_df.to_csv('future.csv', index=False)
